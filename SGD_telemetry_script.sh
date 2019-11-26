@@ -67,7 +67,7 @@ ARCHIVES=`ls -1 | wc -l`
 #While there are still archives to upload, send them and delete the files
 #upon confirmation of successful upload
 INDEX=0;
-LOG "Index: $INDEX; Archives: $ARCHIVES"
+LOG "Will attempt to upload $ARCHIVES archives."
 while [ $INDEX -lt $ARCHIVES ]
 do
     #Get archive path (we're in ARCHIVEDIR)
@@ -75,7 +75,6 @@ do
     LOG "Will now begin uploading $ARCHIVE_TO_UPLOAD."
     
     #Upload the archive
-    LOG "Attempting to cURL the following: Authorization: Bearer $AUTH_TOKEN -X POST -F fileToUpload=$ARCHIVE_TO_UPLOAD $GATEWAY_URL"
     curl -# -k -H "Authorization: Bearer $AUTH_TOKEN" -X POST -F "fileToUpload=$ARCHIVE_TO_UPLOAD" '$GATEWAY_URL'
     if [ $? -eq 0]
     then
