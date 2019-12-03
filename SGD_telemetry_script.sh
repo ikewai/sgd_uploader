@@ -76,7 +76,7 @@ do
     
     #Upload the archive
     curl -# -k -H "Authorization: Bearer $AUTH_TOKEN" -X POST -F "fileToUpload=$ARCHIVE_TO_UPLOAD" '$GATEWAY_URL'
-    if [ $? -eq 0]
+    if [ $? -eq 0 ]
     then
         LOG "Uploaded $ARCHIVE_TO_UPLOAD."
     else
@@ -84,11 +84,11 @@ do
     fi
     
     #TODO Make sure the archive was correctly received
-    ARCHIVE_INTACT=1
+    ARCHIVE_INTACT=0
     LOG "Confirmed $ARCHIVE_TO_UPLOAD is intact on remote."
     
     #If the upload was received, delete the offline copy
-    if ($ARCHIVE_INTACT -eq 1)
+    if [ $ARCHIVE_INTACT -eq 1 ]
     then
         rm $ARCHIVE_TO_UPLOAD
         LOG "Deleted $ARCHIVE_TO_UPLOAD from local."
