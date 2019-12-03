@@ -75,7 +75,7 @@ do
     LOG "Will now begin uploading $ARCHIVE_TO_UPLOAD."
     
     #Upload the archive
-    curl -# -k -H "Authorization: Bearer $AUTH_TOKEN" -X POST -F "fileToUpload=$ARCHIVE_TO_UPLOAD" '$GATEWAY_URL'
+    curl -# -k -H "Authorization: Bearer $AUTH_TOKEN" -X POST -F "fileToUpload=$ARCHIVE_TO_UPLOAD" "$GATEWAY_URL"
     if [ $? -eq 0 ]
     then
         LOG "Uploaded $ARCHIVE_TO_UPLOAD."
@@ -97,5 +97,6 @@ do
 done
 
 ###---END COMMANDS---###
+echo ""
 exit 0;
 EOF
