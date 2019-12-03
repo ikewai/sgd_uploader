@@ -44,7 +44,7 @@ AUTH_TOKEN=[REDACTED] #REMOVE TOKEN BEFORE PUSHING
 
 #Enter archive directory, create archive of yesterday's data
 cd $ARCHIVEDIR
-tar -zcvf $ARCHIVE_NAME -C $YESTERDAY_DATA .
+tar -zcf $ARCHIVE_NAME -C $YESTERDAY_DATA .
 LOG "Archive $ARCHIVE_NAME created."
 
 #Check if there is an active internet connection, exit if there isn't
