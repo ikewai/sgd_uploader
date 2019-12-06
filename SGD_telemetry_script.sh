@@ -11,6 +11,7 @@ DATADIR=~/SGDTestData #temporary directory for testing, production is /data (no 
 LOG_FILE=$DATADIR/telemetry_log.txt
 #Function to print info to log
 LOG() { echo `date +%Y-%m-%d_%H:%M:%S`: "$@" >> $LOG_FILE; }
+LOG "-----Start of run.-----"
 LOG "Data directory is $DATADIR."
 
 #Directory where we are storing the archives
@@ -21,7 +22,7 @@ LOG "Archive directory is $ARCHIVEDIR."
 YESTERDAY_YEAR=`date --date="yesterday" +%Y`
 YESTERDAY_MONTH=`date --date="yesterday" +%m`
 YESTERDAY_DAY=`date --date="yesterday" +%d`
-LOG "Yesterday's date is $YESTERDAY_YEAR-$YESTERDAY_MONTH-$YESTERDAY_DAY"
+LOG "Yesterday's date is $YESTERDAY_YEAR-$YESTERDAY_MONTH-$YESTERDAY_DAY."
 
 #The data is located according to the date gathered
 YESTERDAY_DATA=$DATADIR/$YESTERDAY_YEAR/$YESTERDAY_MONTH/$YESTERDAY_DAY
@@ -67,7 +68,7 @@ ARCHIVES=`ls -1 | wc -l`
 #While there are still archives to upload, send them and delete the files
 #upon confirmation of successful upload
 INDEX=0;
-LOG "Will attempt to upload $ARCHIVES archives."
+LOG "Will attempt to upload $ARCHIVES archive(s)."
 while [ $INDEX -lt $ARCHIVES ]
 do
     #Get archive path (we're in ARCHIVEDIR)
@@ -75,7 +76,10 @@ do
     LOG "Will now begin uploading $ARCHIVE_TO_UPLOAD."
     
     #Upload the archive
-    curl -# -k -H "Authorization: Bearer $AUTH_TOKEN" -X POST -F "fileToUpload=$ARCHIVE_TO_UPLOAD" "$GATEWAY_URL"
+    curl -sk -H "Authorization: Bearer $AUTH_TOKEN"\
+    -X POST \
+    -F "fileToUpload=@$ARCHIVE_TO_UPLOAD"\
+    "$GATEWAY_URL"
     if [ $? -eq 0 ]
     then
         LOG "Uploaded $ARCHIVE_TO_UPLOAD."
@@ -84,19 +88,22 @@ do
     fi
     
     #TODO Make sure the archive was correctly received
-    ARCHIVE_INTACT=0
-    LOG "Confirmed $ARCHIVE_TO_UPLOAD is intact on remote."
+    #ARCHIVE_INTACT=0
+    #LOG "Confirmed $ARCHIVE_TO_UPLOAD is intact on remote."
     
     #If the upload was received, delete the offline copy
-    if [ $ARCHIVE_INTACT -eq 1 ]
-    then
+    #if [ $ARCHIVE_INTACT -eq 1 ]
+    #then
         rm $ARCHIVE_TO_UPLOAD
         LOG "Deleted $ARCHIVE_TO_UPLOAD from local."
-    fi
+    #fi
     ((INDEX++))
 done
 
-###---END COMMANDS---###
+
+LOG "-----End of run.-----"
 echo ""
 exit 0;
+###---END COMMANDS---###
+
 EOF
