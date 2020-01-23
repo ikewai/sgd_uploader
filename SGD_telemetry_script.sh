@@ -79,7 +79,8 @@ do
     curl -sk -H "Authorization: Bearer $AUTH_TOKEN"\
     -X POST \
     -F "fileToUpload=@$ARCHIVE_TO_UPLOAD"\
-    "$GATEWAY_URL"
+    "$GATEWAY_URL"\
+    >> gateway_response.json
     if [ $? -eq 0 ]
     then
         LOG "Uploaded $ARCHIVE_TO_UPLOAD."
@@ -87,16 +88,19 @@ do
         LOG "Upload failed."
     fi
     
-    #TODO Make sure the archive was correctly received
-    #ARCHIVE_INTACT=0
-    #LOG "Confirmed $ARCHIVE_TO_UPLOAD is intact on remote."
+    #Make sure the archive was correctly received
+    python gateway_response_parser.py
+    GATEWAY_RESPONSE=$? # 0 means intact, 1 means error
     
     #If the upload was received, delete the offline copy
-    #if [ $ARCHIVE_INTACT -eq 1 ]
-    #then
+    if [ $GATEWAY_RESPONSE -eq 0 ]
+    then
+        LOG "Confirmed $ARCHIVE_TO_UPLOAD is intact on remote."
         rm $ARCHIVE_TO_UPLOAD
         LOG "Deleted $ARCHIVE_TO_UPLOAD from local."
-    #fi
+    else
+        LOG "Couldn't confirm $ARCHIVE_TO_UPLOAD is intact on remote. Not deleting."
+    fi
     ((INDEX++))
 done
 
